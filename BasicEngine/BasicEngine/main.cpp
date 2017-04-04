@@ -4,6 +4,9 @@
 #include <map>
 #include <unordered_map>
 #include <new>
+#include "SFML\Graphics.hpp"
+#include "GUI.h"
+#include "SFGUI\Renderers.hpp"
 
 #define FNV1_32_INIT ((uint32_t)0x811c9dc5)
 
@@ -123,8 +126,6 @@ void main()
 	// 2. retourner le pointeur disponible
 
 
-
-
 	//Hash String
 
 	//cle = std:::string -> alloc. string
@@ -140,8 +141,6 @@ void main()
 	uint32_t hash = fnv_32a_str("Hello");
 
 
-
-
 	// Use Dll
 
 	HMODULE dll = LoadLibrary(L"EngineDll");
@@ -149,7 +148,36 @@ void main()
 	int val = InitFacialAnimation();
 	FreeLibrary(dll);
 
-	std::cout << std::endl;
+	sfg::Renderer::Set(sfg::VertexArrayRenderer::Create());
+
+	GUI *gui = new GUI();
+	gui->Init();
+
+	sf::VideoMode video_mode(800, 600);
+	sf::RenderWindow render_window(video_mode, "Hello World example");
+	sf::Event event;
+
+	sf::CircleShape shape(100.f);
+	shape.setFillColor(sf::Color::Red);
+	shape.setPosition(sf::Vector2f(2, 5));
+
+	while (render_window.isOpen())
+	{
+		while (render_window.pollEvent(event))
+		{
+			gui->HandleEvent(event);
+			if (event.type == sf::Event::Closed)
+			{
+				render_window.close();
+			}
+		}
+		gui->Update();
+
+		render_window.clear();
+		render_window.draw(shape);
+		gui->Display(render_window);
+		render_window.display();
+	}
 
 	MainLoop();
 }

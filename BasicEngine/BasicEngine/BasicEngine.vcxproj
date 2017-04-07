@@ -162,8 +162,12 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GameObjectInterface.h" />
     <ClInclude Include="GUI.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EngineDll\EngineDll.vcxproj">
+      <Project>{6a008948-190f-4e7b-96c2-eec2cc7bccd5}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

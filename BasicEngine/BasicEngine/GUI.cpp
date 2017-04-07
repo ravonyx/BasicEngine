@@ -12,7 +12,7 @@ void GUI::Init()
 	// Create a box with 20 pixels spacing.
 	auto box = sfg::Box::Create(sfg::Box::Orientation::VERTICAL, 20.f);
 
-	create_cube_btn = sfg::Button::Create("Create Cube");
+	create_cube_btn = sfg::Button::Create("Create Game Object");
 	label_cube = sfg::Label::Create("Cube");
 	//GUI gui;
 	create_cube_btn->GetSignal(sfg::Button::OnLeftClick).Connect(std::bind(&GUI::OnButtonClick, this));

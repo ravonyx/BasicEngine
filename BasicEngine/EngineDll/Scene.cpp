@@ -13,7 +13,7 @@ Scene::~Scene()
 {
 }
 
-GameObject* Scene::AddGameObject(char* name)
+GameObject* Scene::AddGameObject(const char* name)
 {
 	uint32_t hash = hash_str(name);
 
@@ -36,19 +36,37 @@ GameObject* Scene::AddGameObject(char* name)
 
 }
 
-GameObject* Scene::FindGameObject(char* name)
+GameObject* Scene::FindGameObject(const char* name)
 {
 	uint32_t hash = hash_str(name);
 
 	std::vector<std::pair<uint32_t, GameObject*>>::iterator lower;
 
-	lower = std::lower_bound(gameObjects.begin(), gameObjects.end(), hash, [](const std::pair<uint32_t, GameObject*> &left, const uint32_t right) {
+	int indexFind = -1;
+
+	for (unsigned int i = 0; i < gameObjects.size(); i++)
+	{
+		if (gameObjects[i].first == hash)
+		{
+			indexFind = i;
+			break;
+		}
+	}
+/*	lower = std::lower_bound(gameObjects.begin(), gameObjects.end(), hash, [](const std::pair<uint32_t, GameObject*> &left, const uint32_t right) {
 		return left.first < right;
-	});
+	});*/
 
-	int indexFind = lower - gameObjects.begin();
-	std::cout << indexFind << std::endl;
+	if (indexFind == -1)
+	{
+#ifdef _DEBUG
+		std::cout << "Game Object was not found" << std::endl;
+#endif
+		return nullptr;
+	}
 
+#ifdef _DEBUG
+		std::cout << "Game Object at index " << indexFind << " was found" << std::endl;
+#endif
 	return gameObjects[indexFind].second;
 }
 
@@ -58,5 +76,25 @@ void Scene::RemoveGameObject(GameObject *gameObject)
 	//Alloc a game object
 	objAlloc->DestroyObject(gameObject);
 	int usedIndex = gameObject - gameObjects[0].second;
+
+	gameObjects[usedIndex].first = -1;
 	gameObjects[usedIndex].second = nullptr;
+}
+
+void Scene::Update()
+{
+	for (int i = 0; i < gameObjects.size(); i++)
+	{
+		if(gameObjects[i].second != nullptr)
+			gameObjects[i].second->Update();
+	}
+}
+
+void Scene::Render(sf::RenderWindow &render_window)
+{
+	for (int i = 0; i < gameObjects.size(); i++)
+	{
+		if (gameObjects[i].second != nullptr)
+			gameObjects[i].second->Render(render_window);
+	}
 }

@@ -80,3 +80,34 @@ GameObject::~GameObject()
 		m_Components[i] = nullptr;
 	}
 }
+
+void GameObject::Update()
+{
+	for (int i = 0; i < __maxCompType; i++)
+	{
+		if(m_Components[i] != nullptr)
+			m_Components[i]->Update();
+	}
+}
+
+void GameObject::Render(sf::RenderWindow &render_window)
+{
+	for (int i = 0; i < __maxCompType; i++)
+	{
+		if (m_Components[i] != nullptr)
+			m_Components[i]->Render(render_window);
+	}
+}
+
+
+Renderer::Renderer()
+{
+	shape = sf::CircleShape(100.f);
+	shape.setFillColor(sf::Color::Green);
+	shape.setPosition(sf::Vector2f(2, 5));
+}
+
+void Renderer::Render(sf::RenderWindow &render_window)
+{
+	render_window.draw(shape);
+}

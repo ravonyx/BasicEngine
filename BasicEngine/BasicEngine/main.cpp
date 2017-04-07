@@ -20,14 +20,19 @@ float lerp(float a, float b, float f)
 void TestFunctions();
 void MainLoop(sf::RenderWindow &render_window, GUI *gui);
 
+Scene *scene;
+
 void main()
 {
+	ObjectAllocator::CreateInstance();
+	scene = new Scene();
+
 	TestFunctions();
 
 	//Init window and gui
 	sfg::Renderer::Set(sfg::VertexArrayRenderer::Create());
 
-	GUI *gui = new GUI();
+	GUI *gui = new GUI(scene);
 	gui->Init();
 
 	sf::VideoMode video_mode(800, 600);
@@ -39,32 +44,29 @@ void main()
 void TestFunctions()
 {
 	//Get instance of singleton ObjectAllocator
-	ObjectAllocator::CreateInstance();
+	
 	ObjectAllocator::GetInstance();
 
-	Scene *scene = new Scene();
+	
 
 
-	GameObject* go0 = scene->AddGameObject("GameObject0");
-	GameObject* go1 = scene->AddGameObject("GameObject1");
-	GameObject* go2 = scene->AddGameObject("GameObject2");
-	GameObject* go3 = scene->AddGameObject("GameObject3");
+	
 
 	//AddComponents;
-	go0->AddComponent(GameObject::EComponentType::CTTransform);
-	go1->AddComponent(GameObject::EComponentType::CTRenderer);
-	go3->AddComponent(GameObject::EComponentType::CTBehaviour);
-
-	//GetComponents
-	/*Component* comp = go->GetComponent(GameObject::EComponentType::CTTransform);
-	Component* comp2 = go->GetComponent(GameObject::EComponentType::CTBehaviour);*/
-
-	GameObject* go3ex = scene->FindGameObject("GameObject3");
+//	go0->AddComponent(GameObject::EComponentType::CTTransform);
+//	go1->AddComponent(GameObject::EComponentType::CTRenderer);
+//	go3->AddComponent(GameObject::EComponentType::CTBehaviour);
+//
+//	//GetComponents
+//	/*Component* comp = go->GetComponent(GameObject::EComponentType::CTTransform);
+//	Component* comp2 = go->GetComponent(GameObject::EComponentType::CTBehaviour);*/
+//
+//	GameObject* go3ex = scene->FindGameObject("GameObject3");
 
 	//Destroy game object
-	scene->RemoveGameObject(go0);
-
-	go3ex = scene->FindGameObject("GameObject3");
+//	scene->RemoveGameObject(go0);
+//
+//	go3ex = scene->FindGameObject("GameObject3");
 }
 
 void MainLoop(sf::RenderWindow &render_window, GUI *gui)
@@ -73,11 +75,13 @@ void MainLoop(sf::RenderWindow &render_window, GUI *gui)
 	std::chrono::nanoseconds lag(0);
 	auto time_start = clock::now();
 
-	sf::CircleShape shape(100.f);
+	sf::CircleShape shape(0.01f);
 	shape.setFillColor(sf::Color::Red);
 	shape.setPosition(sf::Vector2f(2, 5));
-
 	sf::Event event;
+	sf::Clock clockGui;
+
+	gui->Update(0.0f);
 	while (render_window.isOpen())
 	{
 		auto delta_time = clock::now() - time_start;
@@ -93,8 +97,17 @@ void MainLoop(sf::RenderWindow &render_window, GUI *gui)
 				render_window.close();
 			}
 		}
+		// Update the GUI every 5ms
+		if (clockGui.getElapsedTime().asMicroseconds() >= 5000)
+		{
+			// Update() takes the elapsed time in seconds.
+			gui->Update(static_cast<float>(clockGui.getElapsedTime().asMicroseconds()) / 1000000.f);
+			clockGui.restart();
+		}
+
 		while (lag >= timestep)
 		{
+			//scene->Update();
 			//update(); // update at a fixed rate each time
 			lag -= timestep;
 		}
@@ -102,10 +115,13 @@ void MainLoop(sf::RenderWindow &render_window, GUI *gui)
 		//auto alpha = (float)lag.count() / timestep.count();
 		//auto interpolated_state = lerp(current_state, previous_state, alpha);
 
-		gui->Update();
-
 		render_window.clear();
+
+		//render all gameObjects
+		//scene->Render(render_window);
 		render_window.draw(shape);
+
+		gui->Update(1.0f);
 		gui->Display(render_window);
 		render_window.display();
 	}

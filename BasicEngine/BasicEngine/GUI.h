@@ -7,24 +7,33 @@
 #include "SFGUI\Button.hpp"
 #include "SFGUI\Label.hpp"
 #include "SFGUI\Box.hpp"
+#include "SFGUI\Entry.hpp"
+
+#include "..\EngineDll\Scene.h"
 
 class GUI
 {
 	private:
+		Scene *scene;
 		sfg::SFGUI sfgui;
 		sfg::Desktop desktop;
 		sfg::Window::Ptr window;
 
-		sfg::Button::Ptr create_cube_btn;
-		sfg::Label::Ptr label_cube;
-		sfg::Box::Ptr box;
+		sfg::Button::Ptr createGameObject;
+		sfg::Button::Ptr destroyGameObject;
+		sfg::Button::Ptr findGameObject;
+		sfg::Entry::Ptr nameToCreate;
+		sfg::Entry::Ptr nameToDestroy;
+		sfg::Entry::Ptr nameToFind;
 
-		void OnButtonClick();
+		void OnCreateGameObject();
+		void OnDestroyGameObject();
+		void OnFindGameObject();
 
 	public:
-		GUI();
+		GUI(Scene *scene);
 		void Init();
-		void Update();
+		void Update(float time);
 		void HandleEvent(sf::Event event);
 		void Display(sf::RenderWindow &render_window);
 };

@@ -1,6 +1,6 @@
 #include "Hash.h"
 
-uint32_t hash_str(char *str, uint32_t hval)
+uint32_t hash_str(const char *str, uint32_t hval)
 {
 	/* unsigned string */
 	unsigned char *s = (unsigned char *)str;

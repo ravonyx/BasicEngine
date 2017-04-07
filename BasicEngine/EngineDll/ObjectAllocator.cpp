@@ -42,6 +42,10 @@ GameObject* ObjectAllocator::AllocObject()
 	while (m_objectsPtr[freeIndex] != false)
 		freeIndex++;
 
+#ifdef _DEBUG
+	std::cout << "Game Object allocated at adress " << &m_objects[freeIndex] << std::endl;
+#endif
+
 	m_objectsPtr[freeIndex] = true;
 	return &m_objects[freeIndex];
 }
@@ -49,6 +53,11 @@ void ObjectAllocator::DestroyObject(GameObject* gameObject)
 {
 	int usedIndex = gameObject - &m_objects[0];
 	//m_objects[freeIndex].clear();
+
+#ifdef _DEBUG
+	std::cout << "Game Object destructed at adress " << &m_objects[usedIndex] << std::endl;
+#endif
+
 	m_objectsPtr[usedIndex] = false;
 }
 

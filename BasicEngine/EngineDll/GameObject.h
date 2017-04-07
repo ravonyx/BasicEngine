@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <vector>
+#include "SFML\Graphics.hpp"
 
 #define MAX_OBJECTS 1024
 
@@ -12,7 +13,7 @@ class ENGINEDLL_API Component
 {
 public:
 	virtual void Update() {}
-	virtual void Render() {}
+	virtual void Render(sf::RenderWindow &render_window) {}
 };
 
 extern "C"
@@ -34,12 +35,17 @@ public:
 	Behaviour() {}
 	~Behaviour() {}
 };
+
 extern "C"
 class ENGINEDLL_API Renderer : public Component
 {
-public:
-	Renderer() {}
-	~Renderer() {}
+	private:
+		sf::CircleShape shape;
+	public:
+		Renderer();
+		~Renderer() {}
+		void Render(sf::RenderWindow &render_window);
+
 };
 
 extern "C"
@@ -68,6 +74,10 @@ public:
 	//new c++11 : move assignement
 	GameObject& operator =(const GameObject&& gameObj);
 	GameObject& operator =(const GameObject& gameObj);
+
+
+	void Update();
+	void Render(sf::RenderWindow &render_window);
 
 private:
 	bool isActive = true;

@@ -13,8 +13,11 @@ class ENGINEDLL_API Scene
 		Scene();
 		~Scene();
 
-		GameObject* AddGameObject(char* name);
-		GameObject* FindGameObject(char* name);
+		void Update();
+		void Render(sf::RenderWindow &render_window);
+
+		GameObject* AddGameObject(const char* name);
+		GameObject* FindGameObject(const char* name);
 		void RemoveGameObject(GameObject *gameObj);
 };
 
